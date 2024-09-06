@@ -1,0 +1,13 @@
+{
+    "name": "root",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {},
+    "dependencies": {
+        "axios": "^1.7.7",
+        "radash": "^12.1.0",
+        "@root/models": "workspace:^",
+        "@root/shared": "workspace:^"
+    }
+}
