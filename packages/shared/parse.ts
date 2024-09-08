@@ -31,7 +31,6 @@ export function sqlToMermaidER(sql: string): string {
     const tables: Table[] = []
     const lines = sql.split('\n')
     let currentTable: Table | null = null
-
     // 解析 SQL 语句
     lines.forEach((line) => {
         const trimmedLine = line.trim()

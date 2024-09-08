@@ -3,15 +3,21 @@
     "version": "1.0.50",
     "type": "module",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "compile": "bun build --compile src/index.ts --outfile=server",
         "dev": "bun run --watch src/index.ts"
     },
     "dependencies": {
+        "better-sqlite3": "^11.2.1",
         "elysia": "latest",
         "knex": "latest",
         "mysql": "^2.18.1",
+        "mysql2": "^3.11.0",
         "node-opengauss": "^1.1.0",
-        "pg": "^8.12.0"
+        "oracledb": "^6.6.0",
+        "pg": "^8.12.0",
+        "pg-query-stream": "^4.6.0",
+        "sqlite3": "^5.1.7",
+        "tedious": "^18.6.1"
     },
     "devDependencies": {
         "bun-types": "latest"
