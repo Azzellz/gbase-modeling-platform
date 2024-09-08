@@ -38,6 +38,7 @@ export const TableService = new Elysia().use(TabelModels).post(
                     if (column.comment) {
                         links.comment(column.comment)
                     }
+                    // table.foreign()
                 })
             })
             .toSQL()[0].sql
