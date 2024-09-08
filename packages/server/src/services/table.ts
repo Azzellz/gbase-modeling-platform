@@ -2,36 +2,12 @@ import Elysia from 'elysia'
 import { knex as _knex } from 'knex'
 import { TabelModels } from '../models/table.model'
 import { createErrorResponse, createSuccessResponse } from '@root/shared'
+import { db } from '../db'
 
-// 初始化knex客户端
+// 初始化knex客户端，这里只是单纯用knex的schema功能，所以不需要连接数据库
 const knex = _knex({
-    client: 'pg',
-    connection: {
-        host: '',
-        port: 5432,
-        user: 'tyee',
-        password: 'Abc123!@',
-        database: 'testdb'
-    },
-    pool: {
-        min: 0,
-        max: 7,
-        acquireTimeoutMillis: 300000,
-        createTimeoutMillis: 300000,
-        destroyTimeoutMillis: 50000,
-        idleTimeoutMillis: 300000,
-        reapIntervalMillis: 10000,
-        createRetryIntervalMillis: 2000
-        // propagateCreateError: false
-    }
+    client: 'pg'
 })
-knex.raw('SELECT 1')
-    .then(() => {
-        console.log('Connection successful')
-    })
-    .catch((err) => {
-        console.error('Connection failed', err)
-    })
 
 /**
  * 数据库表服务
@@ -39,6 +15,7 @@ knex.raw('SELECT 1')
 export const TableService = new Elysia().use(TabelModels).post(
     '/tables',
     async ({ body }) => {
+        // 创建表并且生成sql
         const sql = knex.schema
             .createTable(body.name, (table) => {
                 body.columns.forEach((column) => {
@@ -63,9 +40,13 @@ export const TableService = new Elysia().use(TabelModels).post(
                     }
                 })
             })
-            .toSQL()
+            .toSQL()[0].sql
+
+        // 执行sql
+        const result = await db.query(sql)
         return createSuccessResponse(200, '创建成功', {
-            sql: sql[0].sql
+            sql,
+            result
         })
     },
     {
