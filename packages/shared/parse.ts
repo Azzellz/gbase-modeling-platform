@@ -21,8 +21,12 @@ interface ForeignKey {
     referencesColumn: string
 }
 
-// 将 SQL 转换为 Mermaid ER 图代码的主函数
-function sqlToMermaidER(sql: string): string {
+/**
+ * 将 SQL 转换为 Mermaid ER 图代码
+ * @param sql 目标sql
+ * @returns Mermaid ER 图代码
+ */
+export function sqlToMermaidER(sql: string): string {
     const tableMap = new Map<string, Table>()
     const tables: Table[] = []
     const lines = sql.split('\n')
@@ -158,23 +162,23 @@ function convertType(sqlType: string): string {
 //     // 示例调用
 //     const testSQL = `
 //     CREATE SCHEMA test;
-    
+
 //     CREATE TABLE users (
 //       id character varying(255) DEFAULT '123456'::character varying NOT NULL,
 //       username character varying(255) NOT NULL,
 //       email character varying(255) NOT NULL
 //     );
-    
+
 //     ALTER TABLE users ADD CONSTRAINT users_pkey PRIMARY KEY (id);
-    
+
 //     CREATE TABLE orders (
 //       order_id serial NOT NULL,
 //       user_id character varying(255) NOT NULL,
 //       order_date timestamp NOT NULL
 //     );
-    
+
 //     ALTER TABLE orders ADD CONSTRAINT orders_pkey PRIMARY KEY (order_id);
-    
+
 //     ALTER TABLE orders ADD CONSTRAINT orders_user_fk FOREIGN KEY (user_id) REFERENCES users(id);
 //     `
 
