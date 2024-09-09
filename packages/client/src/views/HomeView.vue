@@ -1,7 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+
+</script>
 
 <template>
-    <main>
-        <div class="font-bold">hello!</div>
-    </main>
+    <main class="h-full"></main>
 </template>
