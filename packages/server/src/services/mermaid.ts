@@ -3,7 +3,9 @@ import dbConfig from '../../db.config'
 import { createErrorResponse, createSuccessResponse, sqlToMermaidER } from '@root/shared'
 import { exec } from 'child_process'
 
-export const MermaidService = new Elysia().get('/mermaid/erd', async () => {
+export const MermaidService = new Elysia()
+
+MermaidService.get('/mermaid/erd', async () => {
     const command = `${dbConfig.gbase.path}/bin/gs_dump -U ${dbConfig.username} -h ${dbConfig.host} -p ${dbConfig.port} -s ${dbConfig.database} --password='${dbConfig.password}'`
     return new Promise((resolve, reject) => {
         const proc = exec(

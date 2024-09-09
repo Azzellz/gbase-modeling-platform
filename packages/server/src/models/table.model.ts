@@ -1,8 +1,12 @@
 import Elysia, { t } from 'elysia'
 
 export const TabelModels = new Elysia().model({
+    'query-table': t.Object({
+        schema: t.Optional(t.String({ default: 'public' })) // 模式
+    }),
     'create-table': t.Object({
         name: t.String(), // 表名
+        schema: t.Optional(t.String({ default: 'public' })), // 模式
         columns: t.Array(
             t.Object({
                 name: t.String(), // 字段名
@@ -19,7 +23,7 @@ export const TabelModels = new Elysia().model({
                     t.Literal('double'),
                     t.Literal('float'),
                     t.Literal('json'),
-                    t.Literal('jsonb'),
+                    t.Literal('jsonb')
                 ]), // 字段类型
                 default: t.Optional(t.Any()), // 默认值
                 notNull: t.Optional(t.Boolean()), // 是否为空
