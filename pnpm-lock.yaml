@@ -92,6 +92,9 @@ importers:
 
   packages/server:
     dependencies:
+      '@elysiajs/cors':
+        specifier: ^1.1.1
+        version: 1.1.1(elysia@1.1.12(@sinclair/typebox@0.33.9)(typescript@5.4.5))
       better-sqlite3:
         specifier: ^11.2.1
         version: 11.2.1
@@ -381,6 +384,11 @@ packages:
     resolution: {integrity: sha512-//8027GSbxE9n3QlD73xFY6z4ZbHbvrOVB7AO6hsmrEzGbg+h2A09HboUyDgu+xsmj7JnvJD39Irt+2D0+iV8g==}
     peerDependencies:
       vue: ^3.0.11
+
+  '@elysiajs/cors@1.1.1':
+    resolution: {integrity: sha512-Bl6JSURwbneaJqkq02bd0C/F8StkmU5zoPLpnSncy4DZSU8TDwWPXxmoHqozI3hf1piDaSQ+I21cmpjPlQ8uYQ==}
+    peerDependencies:
+      elysia: '>= 1.1.0'
 
   '@emotion/hash@0.8.0':
     resolution: {integrity: sha512-kBJtf7PH6aWwZ6fka3zQ0p6SBYzx4fl1LoZXE2RrnYST9Xljm7WfKJrU4g/Xr3Beg72MLrp1AWNUmuYJTL7Cow==}
@@ -3454,6 +3462,10 @@ snapshots:
   '@css-render/vue3-ssr@0.15.14(vue@3.5.0(typescript@5.4.5))':
     dependencies:
       vue: 3.5.0(typescript@5.4.5)
+
+  '@elysiajs/cors@1.1.1(elysia@1.1.12(@sinclair/typebox@0.33.9)(typescript@5.4.5))':
+    dependencies:
+      elysia: 1.1.12(@sinclair/typebox@0.33.9)(typescript@5.4.5)
 
   '@emotion/hash@0.8.0': {}
 
