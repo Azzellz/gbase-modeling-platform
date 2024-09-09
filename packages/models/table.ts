@@ -14,3 +14,7 @@ interface ColumnCreateParams {
     default?: any //默认值
     comment?: string //注释
 }
+
+export interface TableQueryParams {
+    schema: string // 所属模式
+}
