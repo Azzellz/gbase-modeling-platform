@@ -22,4 +22,9 @@ export interface ForeignKey {
 
 export interface ColumnInfo extends PrimaryKey {
     data_type: string;
+    is_primary_key: boolean;
+    is_foreign_key: boolean;
+    foreign_schema: string;
+    foreign_table: string;
+    foreign_column: string
 }
