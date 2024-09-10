@@ -2,11 +2,11 @@ import Elysia, { t } from 'elysia'
 
 export const TabelModels = new Elysia().model({
     'query-table': t.Object({
-        schema: t.Optional(t.String({ default: 'main' })) // 模式
+        schema: t.Optional(t.String({ default: 'public' })) // 模式
     }),
     'create-table': t.Object({
         name: t.String(), // 表名
-        schema: t.Optional(t.String({ default: 'main' })), // 模式
+        schema: t.Optional(t.String({ default: 'public' })), // 模式
         columns: t.Array(
             t.Object({
                 name: t.String(), // 字段名

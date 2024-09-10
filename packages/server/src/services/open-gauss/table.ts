@@ -89,7 +89,7 @@ TableService.post(
     '/tables',
     async ({ body }) => {
         // 创建表并且生成sql
-        const sql = SchemaBuilder.withSchema(body.schema || 'public').createTable(body.name, (table) => {
+        const statements = SchemaBuilder.withSchema(body.schema || 'public').createTable(body.name, (table) => {
             // 添加列
             body.columns.forEach((column) => {
                 let links: Knex.ColumnBuilder;
@@ -126,14 +126,21 @@ TableService.post(
                 }
             });
 
-        }).toSQL()[0].sql;
+        }).toSQL();
 
-        console.log(sql);
+        const sql = statements.map(statement => statement.sql + ';')
         // 执行sql
-        const result = await db.execute(sql);
+        const results = await Promise.all(sql.map(sql => db.execute(sql)))
+        const mergedResult = results.reduce((acc, curr) => {
+            if (curr.rows.length > 0) {
+                acc.rows = acc.rows.concat(curr.rows);
+            }
+            acc.affectedRows += curr.affectedRows;
+            return acc;
+        }, { rows: [], affectedRows: 0 });
         return createSuccessResponse(200, '创建成功', {
-            sql,
-            result
+            sql: sql.join(' '),
+            result: mergedResult
         });
     },
     {

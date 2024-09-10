@@ -119,9 +119,9 @@ MermaidService.get('/mermaid/erd', async ({ query: { schema } }) => {
 
     const primaryKeysResult = await db.execute<ColumnInfo>(queryPKSQL)
     const foreignKeysResult = await db.execute<ForeignKey>(queryFKSQL)
-    console.log(primaryKeysResult, foreignKeysResult)
 
     const code = generateMermaidERDiagram(primaryKeysResult.rows, foreignKeysResult.rows)
+    console.log(code)
     return createSuccessResponse(200, '获取Mermaid ERD Code成功', code)
 }, {
     query: 'query-schema'
