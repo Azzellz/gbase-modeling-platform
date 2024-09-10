@@ -4,15 +4,16 @@
 
 <script setup lang="ts">
 import mermaid from 'mermaid'
-import { onMounted, ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 const props = defineProps<{
     template: string
 }>()
-console.log(props.template)
 mermaid.initialize({ startOnLoad: false, securityLevel: 'loose' })
 const mermaidSvg = ref('')
-onMounted(async () => {
-    const { svg } = await mermaid.render('mermaid-test', props.template)
-    mermaidSvg.value = svg
+watchEffect(async () => {
+    if (props.template) {
+        const { svg } = await mermaid.render('mermaid-test', props.template)
+        mermaidSvg.value = svg
+    }
 })
 </script>

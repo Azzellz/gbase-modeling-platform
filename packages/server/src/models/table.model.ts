@@ -6,11 +6,11 @@ export const TabelModels = new Elysia().model({
     }),
     'create-table': t.Object({
         name: t.String(), // 表名
+        charset: t.Optional(t.String({ default: 'utf8mb4' })), // 字符集
         schema: t.Optional(t.String({ default: 'public' })), // 模式
         columns: t.Array(
             t.Object({
                 name: t.String(), // 字段名
-                length: t.Optional(t.Number()), // 字段长度
                 type: t.Union([
                     t.Literal('string'),
                     t.Literal('integer'),

@@ -90,6 +90,10 @@ TableService.post(
     async ({ body }) => {
         // 创建表并且生成sql
         const statements = SchemaBuilder.withSchema(body.schema || 'public').createTable(body.name, (table) => {
+            // 设置字符集
+            if (body.charset) {
+                table.charset(body.charset);
+            }
             // 添加列
             body.columns.forEach((column) => {
                 let links: Knex.ColumnBuilder;
@@ -99,7 +103,6 @@ TableService.post(
                 } else {
                     links = table[column.type](column.name); // 正常处理非自增列
                 }
-
                 // 默认值
                 if (column.default) {
                     links.defaultTo(column.default);

@@ -1,4 +1,4 @@
-import type { DataBaseResult, TableCreateParams, TableQueryParams } from '@root/models'
+import type { DataBaseResult, Table, TableCreateParams, TableQueryParams } from '@root/models'
 import { API_INST } from '.'
 import { handleAxiosRequest } from '@root/shared'
 
@@ -20,9 +20,7 @@ export async function createTable(params: TableCreateParams) {
  * @returns 查询结果
  */
 export async function getTables(params?: TableQueryParams) {
-    return await handleAxiosRequest<DataBaseResult<{
-        tablename: string
-    }>>(() => API_INST.get('/tables', {
+    return await handleAxiosRequest<Table[]>(() => API_INST.get('/tables', {
         params
     }))
 }

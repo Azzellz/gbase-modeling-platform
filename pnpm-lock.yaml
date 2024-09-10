@@ -45,6 +45,9 @@ importers:
       '@types/node':
         specifier: ^20.14.5
         version: 20.16.4
+      '@vicons/ionicons5':
+        specifier: ^0.12.0
+        version: 0.12.0
       '@vitejs/plugin-vue':
         specifier: ^5.0.5
         version: 5.1.3(vite@5.4.3(@types/node@20.16.4))(vue@3.5.0(typescript@5.4.5))
@@ -1062,6 +1065,9 @@ packages:
     resolution: {integrity: sha512-RrqF6Go8s0BGpwRfkOiLuO+n3CUE/CXxGqb0ipbUARhmNWJlekE3YPfayqImSEnCcImpaPgtVGv6Y0u3kLGG/w==}
     peerDependencies:
       vite: ^2.9.0 || ^3.0.0-0 || ^4.0.0 || ^5.0.0-0
+
+  '@vicons/ionicons5@0.12.0':
+    resolution: {integrity: sha512-Iy1EUVRpX0WWxeu1VIReR1zsZLMc4fqpt223czR+Rpnrwu7pt46nbnC2ycO7ItI/uqDLJxnbcMC7FujKs9IfFA==}
 
   '@vitejs/plugin-vue-jsx@4.0.1':
     resolution: {integrity: sha512-7mg9HFGnFHMEwCdB6AY83cVK4A6sCqnrjFYF4WIlebYAQVVJ/sC/CiTruVdrRlhrFoeZ8rlMxY9wYpPTIRhhAg==}
@@ -4360,6 +4366,8 @@ snapshots:
     transitivePeerDependencies:
       - rollup
       - supports-color
+
+  '@vicons/ionicons5@0.12.0': {}
 
   '@vitejs/plugin-vue-jsx@4.0.1(vite@5.4.3(@types/node@20.16.4))(vue@3.5.0(typescript@5.4.5))':
     dependencies:
