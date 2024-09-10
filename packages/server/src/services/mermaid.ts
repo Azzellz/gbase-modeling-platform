@@ -135,7 +135,6 @@ MermaidService.get(
         // 生成 Mermaid ER 图代码
         const code = generateMermaidERDiagramWithAllColumns(allColumnsResult.rows)
 
-        console.log(code)
         return createSuccessResponse(200, '获取Mermaid ERD Code成功', code)
     },
     {
