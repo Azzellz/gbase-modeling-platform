@@ -12,8 +12,12 @@ export const db = {
      */
     async execute<T = unknown>(sql: string) {
         return new Promise<DataBaseResult<T>>((resolve) => {
-            client.query(sql, (result: any) => {
-                resolve(result)
+            client.query(sql, (result: Partial<DataBaseResult<T>>) => {
+                resolve({
+                    rows: [],
+                    affectedRows: 0,
+                    ...result,
+                })
             })
         })
     }
