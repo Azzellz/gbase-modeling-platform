@@ -1,2 +1,2 @@
-export * from './table'
+export * from './open-gauss'
 export * from './mermaid'

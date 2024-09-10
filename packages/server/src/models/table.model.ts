@@ -2,11 +2,11 @@ import Elysia, { t } from 'elysia'
 
 export const TabelModels = new Elysia().model({
     'query-table': t.Object({
-        schema: t.Optional(t.String({ default: 'public' })) // 模式
+        schema: t.Optional(t.String({ default: 'main' })) // 模式
     }),
     'create-table': t.Object({
         name: t.String(), // 表名
-        schema: t.Optional(t.String({ default: 'public' })), // 模式
+        schema: t.Optional(t.String({ default: 'main' })), // 模式
         columns: t.Array(
             t.Object({
                 name: t.String(), // 字段名
@@ -30,7 +30,8 @@ export const TabelModels = new Elysia().model({
                 unique: t.Optional(t.Boolean()), // 是否唯一
                 primary: t.Optional(t.Boolean()), // 是否为主键
                 comment: t.Optional(t.String()), // 注释
-                increment: t.Optional(t.String()) // 自增的列名
+                increments: t.Optional(t.Boolean({ default: false })), // 自增的列名
+                references: t.Optional(t.String()) // 引用的列
             })
         )
     })

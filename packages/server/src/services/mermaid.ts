@@ -2,8 +2,9 @@ import Elysia from 'elysia'
 import { createSuccessResponse } from '@root/shared'
 import { db } from '../db'
 import type { ForeignKey, ColumnInfo } from '@root/models';
+import { SchemaModels } from '../models/schema.model';
 
-// Function to determine relationship labels
+// 生成er图关系标签
 function getRelationshipLabel(table: string, foreignTable: string): string {
     if (table.includes("order_items") && foreignTable.includes("orders")) {
         return "contains";  // orders contains order_items
@@ -15,6 +16,7 @@ function getRelationshipLabel(table: string, foreignTable: string): string {
     return "belongs to";  // default relationship
 }
 
+// 生成er图关系代码
 function generateMermaidERDiagram(primaryKeys: ColumnInfo[], foreignKeys: ForeignKey[]): string {
     let mermaidCode = "erDiagram\n";
 
@@ -48,10 +50,9 @@ function generateMermaidERDiagram(primaryKeys: ColumnInfo[], foreignKeys: Foreig
     return mermaidCode;
 }
 
-export const MermaidService = new Elysia()
-
-MermaidService.get('/mermaid/erd', async () => {
-    const queryPK = `
+// 查询主键的sql
+function createPKQuerySQL(schema: string) {
+    return `
     SELECT
         n.nspname AS schema_name,
         t.relname AS table_name,
@@ -70,10 +71,13 @@ MermaidService.get('/mermaid/erd', async () => {
         pg_type ON a.atttypid = pg_type.oid  
     WHERE
         c.contype = 'p'
-        AND n.nspname = 'main';
+        AND n.nspname = '${schema}';
 `
+}
 
-    const queryFK = `
+// 查询外键的sql
+function createFKQuerySQL(schema: string) {
+    return `
     SELECT
         n.nspname AS schema_name,
         t.relname AS table_name,
@@ -101,11 +105,24 @@ MermaidService.get('/mermaid/erd', async () => {
         pg_attribute fa ON fa.attnum = ANY(c.confkey) AND fa.attrelid = ft.oid
     WHERE
         c.contype = 'f'
-        AND n.nspname = 'main';
+        AND n.nspname = '${schema}';
 `
+}
 
-    const primaryKeysResult = await db.execute<ColumnInfo>(queryPK)
-    const foreignKeysResult = await db.execute<ForeignKey>(queryFK)
+export const MermaidService = new Elysia().use(SchemaModels)
+
+MermaidService.get('/mermaid/erd', async ({ query: { schema } }) => {
+    // 查询主键的sql
+    const queryPKSQL = createPKQuerySQL(schema!)
+    // 查询外键的sql
+    const queryFKSQL = createFKQuerySQL(schema!)
+
+    const primaryKeysResult = await db.execute<ColumnInfo>(queryPKSQL)
+    const foreignKeysResult = await db.execute<ForeignKey>(queryFKSQL)
+    console.log(primaryKeysResult, foreignKeysResult)
+
     const code = generateMermaidERDiagram(primaryKeysResult.rows, foreignKeysResult.rows)
     return createSuccessResponse(200, '获取Mermaid ERD Code成功', code)
+}, {
+    query: 'query-schema'
 })

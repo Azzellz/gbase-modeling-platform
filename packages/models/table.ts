@@ -18,3 +18,27 @@ interface ColumnCreateParams {
 export interface TableQueryParams {
     schema: string // 所属模式
 }
+
+
+interface Column {
+    name: string
+    comment: string | null
+    type: string
+    isNotNull: boolean
+    position: number
+}
+
+export interface Table {
+    /**
+     * 表名字
+     */
+    name: string
+    /**
+     * 所属的schema
+     */
+    schema: string
+    /**
+     * 列
+     */
+    columns: Column[]
+}
