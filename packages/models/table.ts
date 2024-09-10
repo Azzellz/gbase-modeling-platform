@@ -11,7 +11,7 @@ export interface TableColumnCreateParams {
     notNull?: boolean //是否可为空
     unique?: boolean //是否唯一
     primary?: boolean //是否为主键
-    increment?: boolean //是否自增
+    increments?: boolean //是否自增
     default?: any //默认值
     comment?: string //注释
 }
