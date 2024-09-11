@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import ModelingView from '@/views/ModelingView.vue'
+import ErdView from '@/views/ErdView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +15,11 @@ const router = createRouter({
       path: '/modeling',
       name: 'modeling',
       component: ModelingView
+    },
+    {
+      path: '/erd',
+      name: 'erd',
+      component: ErdView
     },
   ]
 })

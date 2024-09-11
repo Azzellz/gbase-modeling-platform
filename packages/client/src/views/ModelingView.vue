@@ -49,28 +49,28 @@
                     <n-form-item-gi :span="2" label="可空" required>
                         <n-switch
                             :round="false"
-                            :disabled="currentColumn.primary"
-                            v-model:value="currentColumn.notNull"
+                            :disabled="currentColumn.isPrimary"
+                            v-model:value="currentColumn.isNotNull"
                         />
                     </n-form-item-gi>
 
                     <n-form-item-gi :span="2" label="唯一" required>
-                        <n-switch :round="false" v-model:value="currentColumn.unique" />
+                        <n-switch :round="false" v-model:value="currentColumn.isUnique" />
                     </n-form-item-gi>
 
                     <n-form-item-gi :span="2" label="主键" required>
                         <n-switch
                             :round="false"
-                            :disabled="currentColumn.increments || currentColumn.notNull"
-                            v-model:value="currentColumn.primary"
+                            :disabled="currentColumn.isIncrements || currentColumn.isNotNull"
+                            v-model:value="currentColumn.isPrimary"
                         />
                     </n-form-item-gi>
 
                     <n-form-item-gi :span="2" label="自增" required>
                         <n-switch
                             :round="false"
-                            :disabled="currentColumn.primary"
-                            v-model:value="currentColumn.increments"
+                            :disabled="currentColumn.isPrimary"
+                            v-model:value="currentColumn.isIncrements"
                         />
                     </n-form-item-gi>
 
@@ -102,7 +102,7 @@
 
 <script setup lang="ts">
 import TableCard from '@/components/table/TableCard.vue'
-import type { TableCreateParams } from '@root/models'
+import type { TableColumnCreateParams, TableCreateParams } from '@root/models'
 import {
     type FormInst,
     type FormRules,
@@ -134,7 +134,7 @@ const tableCharsetOptions = [
     },
     {
         label: 'utf8mb4',
-        value: 'utf8mb4'
+        value: 'utf8mb4' //更全面的utf8
     }
 ]
 
@@ -143,13 +143,13 @@ const tableCharsetOptions = [
 //#region 创建字段相关
 
 // 模板字段
-const _templateColumn = {
+const _templateColumn: TableColumnCreateParams = {
     name: '',
-    type: null,
-    notNull: true,
-    unique: false,
-    primary: false,
-    increments: false,
+    type: null as any,
+    isNotNull: true,
+    isUnique: false,
+    isPrimary: false,
+    isIncrements: false,
     default: null,
     comment: ''
 }

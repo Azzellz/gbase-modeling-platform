@@ -1,5 +1,5 @@
 import { API } from '@/api'
-import type { Table } from '@root/models'
+import type { Table, TableCreateParams } from '@root/models'
 import { isSuccessResponse } from '@root/shared'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -13,9 +13,16 @@ export const useTableStore = defineStore('table-store', () => {
         }
         return result
     }
+    async function createTable(params: TableCreateParams) {
+        const result = await API.table.createTable(params)
+        // if (isSuccessResponse(result)) {
+        //     tables.value = 
+        // }
+    }
 
     return {
         tables,
-        getTables
+        getTables,
+        createTable
     }
 })
