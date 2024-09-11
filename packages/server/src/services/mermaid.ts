@@ -1,8 +1,10 @@
 import Elysia from 'elysia'
 import { createSuccessResponse } from '@root/shared'
-import { db } from '../db'
+import { DB } from '../db'
 import type { ColumnInfo } from '@root/models'
 import { SchemaModels } from '../models/schema.model'
+
+//#region erd工具函数相关
 
 // 生成er图关系标签
 function getRelationshipLabel(table: string, foreignTable: string): string {
@@ -14,42 +16,6 @@ function getRelationshipLabel(table: string, foreignTable: string): string {
         return 'refers to' // order_items refers to products
     }
     return 'belongs to' // default relationship
-}
-
-// 查询所有字段的SQL，包括主键和外键标识
-function createAllColumnsQuerySQL(schema: string) {
-    return `
-    SELECT
-        n.nspname AS schema_name,
-        t.relname AS table_name,
-        a.attname AS column_name,
-        pg_type.typname AS data_type,
-        (CASE WHEN c.contype = 'p' THEN true ELSE false END) AS is_primary_key,
-        (CASE WHEN c.contype = 'f' THEN true ELSE false END) AS is_foreign_key,
-        fns.nspname AS foreign_schema,
-        ft.relname AS foreign_table,
-        fa.attname AS foreign_column
-    FROM
-        pg_attribute a
-    JOIN
-        pg_type ON a.atttypid = pg_type.oid
-    JOIN
-        pg_class t ON a.attrelid = t.oid
-    JOIN
-        pg_namespace n ON t.relnamespace = n.oid
-    LEFT JOIN
-        pg_constraint c ON a.attnum = ANY(c.conkey) AND c.conrelid = t.oid
-    LEFT JOIN
-        pg_class ft ON c.confrelid = ft.oid
-    LEFT JOIN
-        pg_namespace fns ON ft.relnamespace = fns.oid
-    LEFT JOIN
-        pg_attribute fa ON fa.attnum = ANY(c.confkey) AND fa.attrelid = ft.oid
-    WHERE
-        n.nspname = '${schema}'
-        AND a.attnum > 0
-        AND NOT a.attisdropped;
-    `
 }
 
 // 生成er图关系代码，包含所有字段，并排除特定表
@@ -122,18 +88,15 @@ function generateMermaidERDiagramWithAllColumns(columns: ColumnInfo[]): string {
     return mermaidCode
 }
 
+//#endregion
+
 export const MermaidService = new Elysia().use(SchemaModels)
 MermaidService.get(
     '/mermaid/erd',
     async ({ query: { schema } }) => {
-        // 查询所有字段的sql
-        const queryAllColumnsSQL = createAllColumnsQuerySQL(schema!)
-
-        // 执行SQL查询
-        const allColumnsResult = await db.execute<ColumnInfo>(queryAllColumnsSQL)
-
+        const result = await DB.table.getTablesKeys(schema!)
         // 生成 Mermaid ER 图代码
-        const code = generateMermaidERDiagramWithAllColumns(allColumnsResult.rows)
+        const code = generateMermaidERDiagramWithAllColumns(result.rows)
 
         return createSuccessResponse(200, '获取Mermaid ERD Code成功', code)
     },

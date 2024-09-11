@@ -1,4 +1,4 @@
-export interface DataBaseResult<T> {
+export interface DataBaseSqlExecuteResult<T> {
     rows: T[]
     affectedRows: number
 }

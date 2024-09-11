@@ -7,13 +7,14 @@ export interface TableCreateParams {
 
 export interface TableColumnCreateParams {
     name: string //列名
-    type: string //类型
+    type: 'string' | 'integer' | 'boolean' | 'bigint' | 'binary' | 'date' | 'dateTime' | 'decimal' | 'double' | 'float' | 'json' | "jsonb" //类型
     notNull?: boolean //是否可为空
     unique?: boolean //是否唯一
     primary?: boolean //是否为主键
     increments?: boolean //是否自增
     default?: any //默认值
     comment?: string //注释
+    references?: string //外键引用
 }
 
 export interface TableQueryParams {
