@@ -19,6 +19,7 @@ SchemaService.delete('/schemas/:name', async ({ params: { name }, query: { casca
     return createSuccessResponse(200, '删除schema成功', result)
 }, {
     query: t.Object({
+        // 是否级联删除
         cascade: t.Optional(t.BooleanString({ default: false }))
     })
 })

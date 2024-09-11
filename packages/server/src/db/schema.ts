@@ -1,3 +1,4 @@
+import { Schema } from "@root/models"
 import { engine } from "./engine"
 
 async function deleteSchema(name: string, cascade: boolean = false) {
@@ -27,8 +28,13 @@ async function getSchemas(system: boolean) {
         FROM information_schema.schemata
         ${system ? "" : excludes};
     `
-    const result = await engine.execute(sql)
-    return result
+    const result = await engine.execute<{ schema_name: string }>(sql)
+    return result.rows.map((row) => {
+        const schema: Schema = {
+            name: row.schema_name
+        }
+        return schema
+    })
 }
 
 export const schema = {
