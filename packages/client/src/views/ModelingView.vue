@@ -93,7 +93,40 @@
                 </n-grid>
             </n-form>
             <!-- 预览 -->
-            <div class="md:w-2/5"></div>
+            <div class="md:w-2/5">
+                <h2>{{ formModel.name || '未命名' }}</h2>
+                <n-divider></n-divider>
+                <n-table striped :single-line="false">
+                    <thead>
+                        <tr align="center">
+                            <th class="font-bold">列名</th>
+                            <th>数据类型</th>
+                            <th>主键</th>
+                            <th>可空</th>
+                            <th>唯一</th>
+                            <th>自增</th>
+                            <th>默认值</th>
+                            <th>注释</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="column in formModel.columns" :key="column.name" align="center">
+                            <td>{{ column.name }}</td>
+                            <td>{{ column.type }}</td>
+                            <td>{{ column.primary ? '是' : '否' }}</td>
+                            <td>{{ column.notNull ? '否' : '是' }}</td>
+                            <td>{{ column.unique ? '是' : '否' }}</td>
+                            <td>{{ column.increments ? '是' : '否' }}</td>
+                            <td>{{ column.default || '无' }}</td>
+                            <td>
+                                <n-ellipsis style="max-width: 100px">
+                                    {{ column.comment || '无' }}
+                                </n-ellipsis>
+                            </td>
+                        </tr>
+                    </tbody>
+                </n-table>
+            </div>
         </div>
     </main>
 </template>
@@ -113,8 +146,10 @@ import {
     NButton,
     NFlex,
     type FormItemRule,
+    NEllipsis,
     useMessage,
-    useDialog
+    useDialog,
+    NTable
 } from 'naive-ui'
 import { ref } from 'vue'
 
