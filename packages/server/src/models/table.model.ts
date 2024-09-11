@@ -26,11 +26,11 @@ export const TabelModels = new Elysia().model({
                     t.Literal('jsonb')
                 ]), // 字段类型
                 default: t.Optional(t.Any()), // 默认值
-                notNull: t.Optional(t.Boolean()), // 是否为空
-                unique: t.Optional(t.Boolean()), // 是否唯一
-                primary: t.Optional(t.Boolean()), // 是否为主键
+                isNotNull: t.Boolean(), // 是否为空
+                isUnique: t.Boolean(), // 是否唯一
+                isPrimary: t.Boolean(), // 是否为主键
+                isIncrements: t.Boolean(), // 自增的列名
                 comment: t.Optional(t.String()), // 注释
-                increments: t.Optional(t.Boolean({ default: false })), // 自增的列名
                 references: t.Optional(t.String()) // 引用的列
             })
         )

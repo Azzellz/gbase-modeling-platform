@@ -15,7 +15,7 @@ export interface TableColumnCreateParams {
     isPrimary: boolean //是否为主键
     isIncrements: boolean //是否自增
     default?: any //默认值
-    comment: string | null //注释
+    comment?: string //注释
     references?: string
 }
 

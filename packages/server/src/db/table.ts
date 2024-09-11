@@ -128,7 +128,6 @@ ORDER BY
                     name: item.column_name,
                     default: item.default,
                     type: item.data_type,
-                    comment: item.column_comment,
                     isNotNull: item.is_not_null,
                     isPrimary: item.is_primary,
                     isUnique: item.is_unique,
@@ -137,6 +136,9 @@ ORDER BY
                 }
                 if (item.foreign_references) {
                     column.references = item.foreign_references
+                }
+                if (item.column_comment) {
+                    column.comment = item.column_comment
                 }
                 return column
             }) || []
