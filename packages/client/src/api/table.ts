@@ -1,4 +1,4 @@
-import type { DataBaseResult, Table, TableCreateParams, TableQueryParams } from '@root/models'
+import type { DataBaseSqlExecuteResult, Table, TableCreateParams, TableQueryParams } from '@root/models'
 import { API_INST } from '.'
 import { handleAxiosRequest } from '@root/shared'
 
@@ -10,7 +10,7 @@ import { handleAxiosRequest } from '@root/shared'
 export async function createTable(params: TableCreateParams) {
     return await handleAxiosRequest<{
         sql: string,
-        result: DataBaseResult<any>
+        result: DataBaseSqlExecuteResult<any>
     }>(() => API_INST.post('/tables', params))
 }
 

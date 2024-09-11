@@ -5,28 +5,25 @@ export interface TableCreateParams {
     columns: TableColumnCreateParams[] //列
 }
 
+export type TableColumnDateType = 'string' | 'integer' | 'boolean' | 'bigint' | 'binary' | 'date' | 'dateTime' | 'decimal' | 'double' | 'float' | 'json' | "jsonb"
+
 export interface TableColumnCreateParams {
     name: string //列名
-    type: 'string' | 'integer' | 'boolean' | 'bigint' | 'binary' | 'date' | 'dateTime' | 'decimal' | 'double' | 'float' | 'json' | "jsonb" //类型
-    notNull?: boolean //是否可为空
-    unique?: boolean //是否唯一
-    primary?: boolean //是否为主键
-    increments?: boolean //是否自增
+    type: TableColumnDateType //类型
+    isNotNull: boolean //是否可为空
+    isUnique: boolean //是否唯一
+    isPrimary: boolean //是否为主键
+    isIncrements: boolean //是否自增
     default?: any //默认值
-    comment?: string //注释
-    references?: string //外键引用
+    comment: string | null //注释
+    references?: string
 }
 
 export interface TableQueryParams {
     schema: string // 所属模式
 }
 
-
-interface Column {
-    name: string
-    comment: string | null
-    type: string
-    isNotNull: boolean
+export interface TableColumn extends TableColumnCreateParams {
     position: number
 }
 
@@ -42,5 +39,5 @@ export interface Table {
     /**
      * 列
      */
-    columns: Column[]
+    columns: TableColumn[]
 }
