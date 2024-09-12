@@ -13,9 +13,40 @@
                 <p class="my-4">使用mermaid生成对应的ER关系图</p>
             </div>
         </div>
+        <n-divider title-placement="left">
+            <span class="font-bold text-gray">数据库连接状态</span>
+        </n-divider>
+        <div>
+            <n-switch
+                v-model:value="dbStore.isLinking"
+                :loading="isTryLinking"
+                :round="false"
+                disabled
+                size="large"
+            >
+                <template #checked> 已连接 </template>
+                <template #unchecked>
+                    {{ isTryLinking ? '正在尝试连接数据库...' : '未连接' }}
+                </template>
+            </n-switch>
+        </div>
     </main>
 </template>
 
 <script setup lang="ts">
-import { NDivider } from 'naive-ui'
+import { useDBStore } from '@/stores/db'
+import { NDivider, useMessage, NSwitch } from 'naive-ui'
+import { onBeforeMount, ref } from 'vue'
+
+const dbStore = useDBStore()
+const message = useMessage()
+const isTryLinking = ref(true)
+
+onBeforeMount(async () => {
+    const result = await dbStore.init()
+    isTryLinking.value = false
+    if (!result) {
+        message.error('连接数据库失败!')
+    }
+})
 </script>
