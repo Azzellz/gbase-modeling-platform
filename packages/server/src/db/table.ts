@@ -23,9 +23,10 @@ interface TableColumnQueryResult {
 /**
  * 查询模式下的所有数据表
  * @param schema 目标模式
+ * @param table 表名(可选)
  * @returns 数据表
  */
-async function getTables(schema: string) {
+async function getTables(schema: string, table?: string) {
     const sql = `
 WITH primary_keys AS (
     SELECT
@@ -69,7 +70,7 @@ auto_increments AS (
         AND a.attisdropped = FALSE
         AND pg_get_serial_sequence(n.nspname || '.' || t.relname, a.attname) IS NOT NULL
 )
-SELECT 
+SELECT
     n.nspname AS schema_name,
     t.relname AS table_name,
     a.attname AS column_name,
@@ -80,7 +81,7 @@ SELECT
     COALESCE(u.attnum IS NOT NULL, FALSE) AS is_unique,
     COALESCE(ai.attnum IS NOT NULL, FALSE) AS is_increments,
     a.attnum AS ordinal_position,
-    CASE 
+    CASE
         WHEN f.attnum IS NOT NULL THEN (
             SELECT relname FROM pg_class WHERE oid = f.confrelid
         ) || '(' || (
@@ -90,31 +91,33 @@ SELECT
     END AS foreign_references,
     pg_catalog.col_description(a.attrelid, a.attnum) AS column_comment,
     pg_get_expr(d.adbin, d.adrelid) AS default_value
-FROM 
+FROM
     pg_class t
-JOIN 
+JOIN
     pg_namespace n ON t.relnamespace = n.oid
-JOIN 
+JOIN
     pg_attribute a ON a.attrelid = t.oid
-JOIN 
+JOIN
     pg_type ON a.atttypid = pg_type.oid
-LEFT JOIN 
+LEFT JOIN
     pg_attrdef d ON d.adrelid = a.attrelid AND d.adnum = a.attnum
-LEFT JOIN 
+LEFT JOIN
     primary_keys p ON t.oid = p.conrelid AND a.attnum = p.attnum
-LEFT JOIN 
+LEFT JOIN
     foreign_keys f ON t.oid = f.conrelid AND a.attnum = f.attnum
-LEFT JOIN 
+LEFT JOIN
     unique_keys u ON t.oid = u.conrelid AND a.attnum = u.attnum
-LEFT JOIN 
+LEFT JOIN
     auto_increments ai ON t.oid = ai.attrelid AND a.attnum = ai.attnum
-WHERE 
+WHERE
     t.relkind = 'r'
     AND n.nspname = '${schema}' 
+    ${table ? `AND t.relname = '${table}'` : ''}
     AND a.attnum > 0
     AND NOT a.attisdropped
 ORDER BY 
     schema_name, table_name, ordinal_position;
+
 `
 
     const result = await engine.execute<TableColumnQueryResult>(sql);

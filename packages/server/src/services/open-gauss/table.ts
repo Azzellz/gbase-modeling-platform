@@ -25,6 +25,24 @@ TableService.get(
     }
 );
 
+/**
+ * 获取当前数据库的特定数据表
+ */
+TableService.get(
+    '/tables/:tableName',
+    async ({ query, params }) => {
+        try {
+            const tables = await DB.table.getTables(query.schema!, params.tableName)
+            return createSuccessResponse(200, '获取数据表及字段信息成功', tables.length > 0 ? tables[0] : null);
+        } catch (error) {
+            return createErrorResponse(500, '查询数据表及字段信息失败: ' + error);
+        }
+    },
+    {
+        query: 'query-table'
+    }
+);
+
 
 /**
  * 创建表
