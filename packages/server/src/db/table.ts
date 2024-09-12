@@ -116,6 +116,7 @@ WHERE
     t.relkind = 'r'
     AND n.nspname = '${schema}' 
     ${table ? `AND t.relname = '${table}'` : ''}
+    AND t.relname <> 'all_db_links'
     AND a.attnum > 0
     AND NOT a.attisdropped
 ORDER BY 
