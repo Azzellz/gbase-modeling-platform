@@ -4,7 +4,8 @@
         <n-divider></n-divider>
         <div class="flex max-lg:flex-col gap-10">
             <!-- 表单 -->
-            <n-form ref="formRef" class="md:w-3/5" :model="formModel" :rules="formRules">
+            <n-form ref="formRef" class="md:w-1/2" :model="formModel" :rules="formRules">
+                <!-- 表相关 -->
                 <n-grid :cols="12" :x-gap="24">
                     <n-form-item-gi :span="6" label="数据表的名称" path="name">
                         <n-input v-model:value="formModel.name" placeholder="请输入数据表名称" />
@@ -19,29 +20,41 @@
                         />
                     </n-form-item-gi>
                 </n-grid>
-                <n-divider style="margin-top: 0px">
-                    <span class="font-bold text-gray">创建字段</span>
+                <div class="flex gap-4">
+                    <n-button type="success" @click="handleCreateTable">创建表</n-button>
+                    <n-button type="warning" @click="handleResetTable">重置表</n-button>
+                </div>
+                <n-divider>
+                    <span class="font-bold text-gray">创建列</span>
                 </n-divider>
-                <n-grid :cols="12" :x-gap="24">
-                    <!-- 字段名 -->
-                    <n-form-item-gi :span="4" label="字段名" path="column.name">
-                        <n-input v-model:value="currentColumn.name" placeholder="请输入字段名" />
+                <!-- 列相关 -->
+                <n-grid :cols="12" :x-gap="24" :y-gap="12">
+                    <!-- 列名 -->
+                    <n-form-item-gi :span="4" label="列名" path="column.name">
+                        <n-input v-model:value="currentColumn.name" placeholder="请输入列名" />
                     </n-form-item-gi>
 
-                    <!-- 字段数据类型 -->
-                    <n-form-item-gi :span="4" label="字段数据类型" path="column.type">
+                    <!-- 列数据类型 -->
+                    <n-form-item-gi :span="4" label="列数据类型" path="column.type">
                         <n-select
                             v-model:value="currentColumn.type"
                             :options="columnTypeOptions"
-                            placeholder="请选择字段数据类型"
+                            placeholder="请选择列数据类型"
                         />
                     </n-form-item-gi>
 
-                    <!-- 字段默认值 -->
-                    <n-form-item-gi :span="4" label="字段默认值" path="column.default">
+                    <!-- 列默认值 -->
+                    <n-form-item-gi :span="4" label="列默认值" path="column.default">
                         <n-input
                             v-model:value="currentColumn.default"
-                            placeholder="请输入字段默认值"
+                            placeholder="请输入列默认值"
+                        />
+                    </n-form-item-gi>
+
+                    <n-form-item-gi :span="4" label="外键引用">
+                        <n-input
+                            v-model:value="currentColumn.references"
+                            placeholder="请输入外键引用"
                         />
                     </n-form-item-gi>
 
@@ -74,27 +87,27 @@
                         />
                     </n-form-item-gi>
 
-                    <!-- 字段注释 -->
-                    <n-form-item-gi :span="12" label="字段注释" path="column.comment">
+                    <!-- 列注释 -->
+                    <n-form-item-gi :span="12" label="列注释" path="column.comment">
                         <n-input
                             clearable
                             type="textarea"
                             v-model:value="currentColumn.comment"
-                            placeholder="请输入字段注释"
+                            placeholder="请输入列注释"
                         />
                     </n-form-item-gi>
 
                     <n-form-item-gi :span="6">
                         <n-flex>
-                            <n-button type="primary" @click="handleCreateColumn">创建字段</n-button>
-                            <n-button type="warning" @click="handleResetColumn">重置字段</n-button>
+                            <n-button type="primary" @click="handleCreateColumn">创建列</n-button>
+                            <n-button type="warning" @click="handleResetColumn">重置列</n-button>
                         </n-flex>
                     </n-form-item-gi>
                 </n-grid>
             </n-form>
             <!-- 预览 -->
-            <div class="md:w-2/5">
-                <TableCard :table="formModel"></TableCard>
+            <div class="md:w-1/2">
+                <TableCard :table="formModel" />
             </div>
         </div>
     </main>
@@ -120,6 +133,7 @@ import {
     useDialog
 } from 'naive-ui'
 import { ref } from 'vue'
+import { cloneDeep } from 'lodash'
 
 const message = useMessage()
 const dialog = useDialog()
@@ -138,12 +152,20 @@ const tableCharsetOptions = [
     }
 ]
 
+async function handleCreateTable() {}
+
+function handleResetTable() {
+    formModel.value = cloneDeep(_emptyTable)
+    // 当前列的信息也要重置
+    handleResetColumn()
+}
+
 //#endregion
 
-//#region 创建字段相关
+//#region 创建列相关
 
-// 模板字段
-const _templateColumn: TableColumnCreateParams = {
+// 模板列
+const _emptyColumn: TableColumnCreateParams = {
     name: '',
     type: null as any,
     isNotNull: true,
@@ -151,13 +173,12 @@ const _templateColumn: TableColumnCreateParams = {
     isPrimary: false,
     isIncrements: false,
     default: null,
-    comment: ''
+    comment: '',
+    references: ''
 }
-// 当前字段
-const currentColumn = ref({
-    ..._templateColumn
-})
-// 字段数据类型的选项
+// 当前列
+const currentColumn = ref(cloneDeep(_emptyColumn))
+// 列数据类型的选项
 const columnTypeOptions = [
     {
         label: '整数(integer)',
@@ -218,21 +239,21 @@ function handleCreateColumn() {
         formModel.value.columns.push({
             ...(currentColumn.value as any)
         })
-        message.success('创建字段成功')
+        message.success('创建列成功')
     })
 }
 
-// 重置当前字段
+// 重置当前列
 function handleResetColumn() {
     dialog.success({
-        title: '重置字段的信息',
+        title: '重置列的信息',
         content: '你确定？',
         positiveText: '确定',
         negativeText: '不确定',
         maskClosable: false,
         onPositiveClick() {
-            currentColumn.value = { ..._templateColumn }
-            message.success('重置字段成功')
+            currentColumn.value = cloneDeep(_emptyColumn)
+            message.success('重置列成功')
         }
     })
 }
@@ -241,12 +262,13 @@ function handleResetColumn() {
 
 //#region 表单相关
 
-const formModel = ref<TableCreateParams>({
+const _emptyTable = {
     name: '',
     schema: 'public',
     charset: 'utf8mb4',
     columns: []
-})
+}
+const formModel = ref<TableCreateParams>(cloneDeep(_emptyTable))
 const formRef = ref<FormInst | null>(null)
 function createRule(label: string): FormItemRule {
     return {
@@ -279,15 +301,15 @@ const formRules: FormRules = {
             validator() {
                 // 不得空
                 if (!currentColumn.value.name) {
-                    return new Error(`请输入字段名`)
+                    return new Error(`请输入列名`)
                 }
                 // 只能是英文
                 if (!/^[a-zA-Z]+$/.test(currentColumn.value.name)) {
-                    return new Error(`字段名只能包含英文字母`)
+                    return new Error(`列名只能包含英文字母`)
                 }
                 // 长度在 1 到 20 个字符
                 if (currentColumn.value.name.length < 1 || currentColumn.value.name.length > 20) {
-                    return new Error(`字段名长度在 1 到 20 个字符之间`)
+                    return new Error(`列名长度在 1 到 20 个字符之间`)
                 }
                 // 是否有重复
                 if (
@@ -295,7 +317,7 @@ const formRules: FormRules = {
                         (column) => column.name === currentColumn.value.name
                     )
                 ) {
-                    return new Error(`字段名已存在`)
+                    return new Error(`列名已存在`)
                 }
                 return true
             }
@@ -306,7 +328,7 @@ const formRules: FormRules = {
             validator() {
                 // 不得空
                 if (!currentColumn.value.type) {
-                    return new Error(`请选择字段数据类型`)
+                    return new Error(`请选择列数据类型`)
                 } else {
                     return true
                 }

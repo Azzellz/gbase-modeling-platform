@@ -9,7 +9,9 @@
                 <span>模式 {{ table.schema }}</span>
             </div>
         </template>
-        <n-divider style="margin-top: 0px" />
+        <n-divider style="margin-top: 0px">
+            <span>{{ table.columns.length }} 个列</span>
+        </n-divider>
         <n-table striped :single-line="false">
             <thead>
                 <tr align="center">
@@ -20,6 +22,7 @@
                     <th>唯一</th>
                     <th>自增</th>
                     <th>默认值</th>
+                    <th>外键引用</th>
                     <th>注释</th>
                 </tr>
             </thead>
@@ -33,15 +36,17 @@
                     <td>....</td>
                     <td>....</td>
                     <td>....</td>
+                    <td>....</td>
                 </tr>
                 <tr v-for="column in table.columns" :key="column.name" align="center">
                     <td>{{ column.name }}</td>
                     <td>{{ column.type }}</td>
-                    <td>{{ column.primary ? '是' : '否' }}</td>
-                    <td>{{ column.notNull ? '否' : '是' }}</td>
-                    <td>{{ column.unique ? '是' : '否' }}</td>
-                    <td>{{ column.increments ? '是' : '否' }}</td>
+                    <td>{{ column.isPrimary ? '是' : '否' }}</td>
+                    <td>{{ column.isNotNull ? '否' : '是' }}</td>
+                    <td>{{ column.isUnique ? '是' : '否' }}</td>
+                    <td>{{ column.isIncrements ? '是' : '否' }}</td>
                     <td>{{ column.default || '无' }}</td>
+                    <td>{{ column.references || '无' }}</td>
                     <td>
                         <n-ellipsis style="max-width: 100px">
                             {{ column.comment || '无' }}
