@@ -60,7 +60,7 @@
 
 <script setup lang="ts">
 import type { TableCreateParams } from '@root/models'
-import { NCard, NTable, NDivider } from 'naive-ui'
+import { NCard, NTable, NDivider, NEllipsis } from 'naive-ui'
 
 defineProps<{
     table: TableCreateParams
