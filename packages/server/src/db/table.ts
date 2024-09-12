@@ -4,6 +4,9 @@ import { engine } from "./engine";
 import { SchemaBuilder } from "../utils";
 import { Knex } from "knex";
 
+/**
+ * 数据表列信息查询结果
+ */
 interface TableColumnQueryResult {
     schema_name: string;
     table_name: string;
@@ -154,7 +157,7 @@ ORDER BY
 /**
  * 创建表
  * @param params 创建参数
- * @returns 建表sql和归并的执行结果
+ * @returns 建表sql和新创建的表
  */
 async function createTable(params: TableCreateParams) {
     // 创建表并且生成sql
@@ -202,18 +205,14 @@ async function createTable(params: TableCreateParams) {
 
     const sqls = statements.map(statement => statement.sql + ';')
     // 执行sql
-    const results = await Promise.all(sqls.map(sql => engine.execute(sql)))
-    const mergedResult = results.reduce((acc, curr) => {
-        if (curr.rows.length > 0) {
-            acc.rows = acc.rows.concat(curr.rows);
-        }
-        acc.affectedRows += curr.affectedRows;
-        return acc;
-    }, { rows: [], affectedRows: 0 });
+    await Promise.all(sqls.map(sql => engine.execute(sql)))
+
+    // 查询新创建的表
+    const newTable = await getTables(params.schema || 'public', params.name)
 
     return {
         sql: sqls.join(' '),
-        result: mergedResult
+        result: newTable.length ? newTable[0] : null,
     }
 }
 
