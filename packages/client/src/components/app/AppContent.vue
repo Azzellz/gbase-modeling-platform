@@ -1,3 +1,5 @@
 <template>
-    <RouterView class="h-full"></RouterView>
+    <KeepAlive include="HomeView">
+        <RouterView class="h-full" />
+    </KeepAlive>
 </template>
