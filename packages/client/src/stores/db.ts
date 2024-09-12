@@ -7,6 +7,8 @@ import { ref } from "vue";
 export const useDBStore = defineStore('db-store', () => {
     const isLinking = ref(false)
 
+    //#region 数据表相关
+
     const tables = ref<Table[]>([]);
     async function getTables() {
         const result = await API.table.getTables()
@@ -16,6 +18,10 @@ export const useDBStore = defineStore('db-store', () => {
         return result
     }
 
+    //#endregion
+
+    //#region 数据模式相关
+
     const schemas = ref<Schema[]>([]);
     async function getSchemas(params: SchemaQueryParams) {
         const result = await API.schema.getSchemas(params)
@@ -24,6 +30,8 @@ export const useDBStore = defineStore('db-store', () => {
         }
         return result
     }
+
+    //#endregion
 
     /**
      * 初始化数据库所需的东西
@@ -46,6 +54,6 @@ export const useDBStore = defineStore('db-store', () => {
         getTables,
         schemas,
         getSchemas,
-        init
+        init,
     }
 })
