@@ -2,10 +2,22 @@ import OpenGauss from 'node-opengauss'
 import config from '../../db.config'
 import { DataBaseSqlExecuteResult } from '@root/models'
 
-// 初始化客户端
+//#region 初始化客户端
+
 const client = new OpenGauss()
-client.connect(config)
-process.on('exit', client.disconnect)
+client.connect(config).then(() => {
+    console.log('数据库连接成功!')
+})
+process.on('exit', () => {
+    try {
+        client.disconnect()
+        console.log('成功断开数据库连接')
+    } catch (error) {
+        console.error('断开数据库连接失败: ' + error)
+    }
+})
+
+//#endregion
 
 /**
  * OpenGauss数据库引擎
