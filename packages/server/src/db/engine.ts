@@ -1,11 +1,11 @@
 import OpenGauss from 'node-opengauss'
-import config from '@root/config'
+import config from '@config/db.config'
 import { DataBaseSqlExecuteResult } from '@root/models'
 
 //#region 初始化客户端
 
 const client = new OpenGauss()
-client.connect(config.db).then(() => {
+client.connect(config).then(() => {
     console.log('数据库连接成功!')
 })
 function disconnect() {

@@ -22,7 +22,7 @@
         <n-divider title-placement="left">
             <span class="font-bold text-gray">数据库连接状态</span>
         </n-divider>
-        <div>
+        <div class="flex gap-4">
             <n-switch
                 v-model:value="dbStore.isLinking"
                 :loading="isTryLinking"

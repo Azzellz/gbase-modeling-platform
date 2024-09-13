@@ -28,4 +28,5 @@ coverage
 *.sw?
 
 *.tsbuildinfo
-config.ts
+config/client.config.ts
+config/db.config.ts
