@@ -1,6 +1,20 @@
 import { DataBaseStatus } from "@root/models"
 import { engine } from "./engine"
 
+interface StatusQueryResult {
+    db_size: string
+    db_version: string
+    active_connections: string
+    idle_connections: string
+    uptime: {
+        days: number
+        hours: number
+        minutes: number
+        seconds: number
+        milliseconds: number
+    }
+    tablespace_size: string
+}
 /**
  * 获取数据库状态
  * @returns 数据库状态的快照
@@ -16,8 +30,19 @@ SELECT
     (SELECT pg_size_pretty(pg_tablespace_size('pg_default')) AS tablespace_size);
  `
 
-    const result = await engine.execute<DataBaseStatus>(sql)
-    return result
+    const result = await engine.execute<StatusQueryResult>(sql)
+    const status = result.affectedRows ? result.rows[0] : null
+    if (status) {
+        const processedStatus: DataBaseStatus = {
+            ...status,
+            idle_connections: parseInt(status.idle_connections),
+            active_connections: parseInt(status.active_connections)
+        }
+        return processedStatus
+    } else {
+        return null
+    }
+
 }
 
 export const status = {

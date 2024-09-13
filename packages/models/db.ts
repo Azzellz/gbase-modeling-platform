@@ -6,8 +6,8 @@ export interface DataBaseSqlExecuteResult<T> {
 export interface DataBaseStatus {
     db_size: string
     db_version: string
-    active_connections: string
-    idle_connections: string
+    active_connections: number
+    idle_connections: number
     uptime: {
         days: number
         hours: number
