@@ -273,7 +273,102 @@ const _emptyTable = {
 }
 const formModel = ref<TableCreateParams>(cloneDeep(_emptyTable))
 const formRef = ref<FormInst | null>(null)
-function createRule(label: string): FormItemRule {
+const tableNameRegex = /^[a-zA-Z_][a-zA-Z0-9_]*$/
+const reservedWords = [
+    'ALL',
+    'ANALYSE',
+    'ANALYZE',
+    'AND',
+    'ANY',
+    'ARRAY',
+    'AS',
+    'ASC',
+    'ASYMMETRIC',
+    'AUTHORIZATION',
+    'BINARY',
+    'BOTH',
+    'CASE',
+    'CAST',
+    'CHECK',
+    'COLLATE',
+    'COLUMN',
+    'CONSTRAINT',
+    'CREATE',
+    'CROSS',
+    'CURRENT_DATE',
+    'CURRENT_ROLE',
+    'CURRENT_TIME',
+    'CURRENT_TIMESTAMP',
+    'CURRENT_USER',
+    'DEFAULT',
+    'DEFERRABLE',
+    'DISTINCT',
+    'DO',
+    'ELSE',
+    'END',
+    'EXCEPT',
+    'FALSE',
+    'FETCH',
+    'FOREIGN',
+    'FREEZE',
+    'FROM',
+    'FULL',
+    'GRANT',
+    'GROUP',
+    'HAVING',
+    'ILIKE',
+    'IN',
+    'INITIALLY',
+    'INNER',
+    'INTERSECT',
+    'INTO',
+    'IS',
+    'ISNULL',
+    'JOIN',
+    'LATERAL',
+    'LEADING',
+    'LEFT',
+    'LIKE',
+    'LIMIT',
+    'LOCALTIME',
+    'LOCALTIMESTAMP',
+    'NATURAL',
+    'NOT',
+    'NOTNULL',
+    'NULL',
+    'OFFSET',
+    'ON',
+    'ONLY',
+    'OR',
+    'ORDER',
+    'OUTER',
+    'OVERLAPS',
+    'PLACING',
+    'PRIMARY',
+    'REFERENCES',
+    'RETURNING',
+    'RIGHT',
+    'SELECT',
+    'SESSION_USER',
+    'SIMILAR',
+    'SOME',
+    'SYMMETRIC',
+    'TABLE',
+    'THEN',
+    'TO',
+    'TRAILING',
+    'TRUE',
+    'UNION',
+    'UNIQUE',
+    'USER',
+    'USING',
+    'VERBOSE',
+    'WHEN',
+    'WHERE',
+    'WINDOW',
+    'WITH'
+]
+function createTableRule(label: string): FormItemRule {
     return {
         required: true,
         trigger: ['blur', 'input'],
@@ -282,21 +377,25 @@ function createRule(label: string): FormItemRule {
             if (!value) {
                 return new Error(`请输入${label}`)
             }
-            // 只能是英文
-            if (!/^[a-zA-Z]+$/.test(value)) {
-                return new Error(`${label}只能包含英文字母`)
+            // 字符合法性
+            if (!tableNameRegex.test(value)) {
+                return new Error(`${label}`)
             }
-            // 长度在 1 到 20 个字符
-            if (value.length < 1 || value.length > 20) {
-                return new Error(`${label}长度在 1 到 20 个字符之间`)
+            // 长度在 1 到 63 个字符
+            if (value.length < 1 || value.length > 63) {
+                return new Error(`${label}长度在 1 到 63 个字符之间`)
+            }
+            // 是否是保留字
+            if (reservedWords.includes(value.toUpperCase())) {
+                return new Error(`不能是保留字！`)
             }
             return true
         }
     }
 }
 const formRules: FormRules = {
-    name: createRule('数据表名称'),
-    schema: createRule('数据表模式'),
+    name: createTableRule('数据表名称'),
+    schema: createTableRule('数据表模式'),
     column: {
         name: {
             required: true,
