@@ -1,7 +1,7 @@
 import Elysia from 'elysia'
-import { TabelModels } from '../../models/table.model'
+import { TabelModels } from '@/models/table.model'
 import { createErrorResponse, createSuccessResponse } from '@root/shared'
-import { DB } from '../../db'
+import { DB } from '@/db'
 
 /**
  * 数据库表服务

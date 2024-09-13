@@ -1,6 +1,6 @@
 import Elysia, { t } from "elysia";
 import { createSuccessResponse } from "@root/shared";
-import { DB } from "../../db";
+import { DB } from "@/db";
 
 export const SchemaService = new Elysia()
 

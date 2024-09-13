@@ -1,7 +1,7 @@
 import { ColumnInfo, Table, TableColumn, TableColumnDateType, TableCreateParams } from "@root/models";
 import { group } from "radash";
 import { engine } from "./engine";
-import { SchemaBuilder } from "../utils";
+import { SchemaBuilder } from "@/utils";
 import { Knex } from "knex";
 
 /**

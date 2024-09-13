@@ -1,8 +1,8 @@
 import Elysia from 'elysia'
 import { createSuccessResponse } from '@root/shared'
-import { DB } from '../db'
+import { DB } from '@/db'
 import type { ColumnInfo } from '@root/models'
-import { SchemaModels } from '../models/schema.model'
+import { SchemaModels } from '@/models/schema.model'
 
 //#region erd工具函数相关
 
