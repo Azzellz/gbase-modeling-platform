@@ -1,7 +1,6 @@
 export interface TableCreateParams {
     name: string //表名
     schema?: string //所属模式
-    charset?: string //字符集
     columns: TableColumnCreateParams[] //列
 }
 

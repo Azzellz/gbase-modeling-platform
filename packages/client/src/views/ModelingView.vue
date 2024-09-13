@@ -7,23 +7,24 @@
             <n-form ref="formRef" class="md:w-1/2" :model="formModel" :rules="formRules">
                 <!-- 表相关 -->
                 <n-grid :cols="12" :x-gap="24">
-                    <n-form-item-gi :span="6" label="数据表的名称" path="name">
+                    <n-form-item-gi :span="3" label="数据表的名称" path="name">
                         <n-input v-model:value="formModel.name" placeholder="请输入数据表名称" />
                     </n-form-item-gi>
                     <n-form-item-gi :span="3" label="数据表的模式" path="schema">
                         <n-input v-model:value="formModel.schema" placeholder="请输入数据表模式" />
                     </n-form-item-gi>
-                    <n-form-item-gi :span="3" label="字符集" required>
-                        <n-select
-                            :options="tableCharsetOptions"
-                            v-model:value="formModel.charset"
-                        />
-                    </n-form-item-gi>
+                    <n-gi class="flex items-center gap-4" :span="6">
+                        <n-button
+                            :disabled="!isAllowCreateTable"
+                            type="success"
+                            @click="handleCreateTable"
+                        >
+                            {{ isAllowCreateTable ? '创建表' : '创建表，但是至少需要一列' }}
+                        </n-button>
+                        <n-button type="warning" @click="handleResetTable">重置表</n-button>
+                    </n-gi>
                 </n-grid>
-                <div class="flex gap-4">
-                    <n-button type="success" @click="handleCreateTable">创建表</n-button>
-                    <n-button type="warning" @click="handleResetTable">重置表</n-button>
-                </div>
+
                 <n-divider>
                     <span class="font-bold text-gray">创建列</span>
                 </n-divider>
@@ -129,10 +130,11 @@ import {
     NSwitch,
     NButton,
     NFlex,
+    NGi,
     useMessage,
     useDialog
 } from 'naive-ui'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { cloneDeep } from 'lodash'
 import { useDBStore } from '@/stores/db'
 import { isSuccessResponse } from '@root/shared'
@@ -142,18 +144,9 @@ const dbStore = useDBStore()
 const dialog = useDialog()
 
 //#region 创建数据表相关
-
-// 数据表字符集选项
-const tableCharsetOptions = [
-    {
-        label: 'utf8',
-        value: 'utf8'
-    },
-    {
-        label: 'utf8mb4',
-        value: 'utf8mb4' //更全面的utf8
-    }
-]
+const isAllowCreateTable = computed(() => {
+    return !!formModel.value.name && formModel.value.columns.length > 0
+})
 
 async function handleCreateTable() {
     const result = await dbStore.createTable(formModel.value)
@@ -276,7 +269,6 @@ function handleResetColumn() {
 const _emptyTable = {
     name: '',
     schema: 'public',
-    charset: 'utf8mb4',
     columns: []
 }
 const formModel = ref<TableCreateParams>(cloneDeep(_emptyTable))

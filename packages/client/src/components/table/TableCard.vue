@@ -1,10 +1,8 @@
 <template>
-    <n-card class="shadow-sm">
+    <n-card class="shadow-sm overflow-auto">
         <template #header>
             <div class="flex justify-around items-center gap-4">
-                <span>{{ table.name || '未命名' }}</span>
-                <n-divider vertical />
-                <span>字符集 {{ table.charset }}</span>
+                <span>表名 {{ table.name || '未命名' }}</span>
                 <n-divider vertical />
                 <span>模式 {{ table.schema }}</span>
             </div>
