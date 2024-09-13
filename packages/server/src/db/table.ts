@@ -253,8 +253,7 @@ async function getTablesKeys(schema: string) {
         AND a.attnum > 0
         AND NOT a.attisdropped;
     `
-    const result = await engine.execute<ColumnInfo>(sql)
-    return result
+    return await engine.execute<ColumnInfo>(sql)
 }
 
 export const table = {

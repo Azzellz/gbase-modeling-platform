@@ -3,9 +3,7 @@ import { engine } from "./engine"
 
 async function deleteSchema(name: string, cascade: boolean = false) {
     const sql = `DROP SCHEMA ${name} ${cascade ? 'CASCADE' : ''};`
-    const result = await engine.execute(sql)
-
-    return result
+    return await engine.execute(sql)
 }
 
 async function getSchemas(system: boolean) {
@@ -29,6 +27,7 @@ async function getSchemas(system: boolean) {
         ${system ? "" : excludes};
     `
     const result = await engine.execute<{ schema_name: string }>(sql)
+
     return result.rows.map((row) => {
         const schema: Schema = {
             name: row.schema_name

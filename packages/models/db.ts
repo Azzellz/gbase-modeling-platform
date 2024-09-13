@@ -3,6 +3,21 @@ export interface DataBaseSqlExecuteResult<T> {
     affectedRows: number
 }
 
+export interface DataBaseStatus {
+    db_size: string
+    db_version: string
+    active_connections: string
+    idle_connections: string
+    uptime: {
+        days: number
+        hours: number
+        minutes: number
+        seconds: number
+        milliseconds: number
+    }
+    tablespace_size: string
+}
+
 export interface PrimaryKey {
     schema_name: string;
     table_name: string;
