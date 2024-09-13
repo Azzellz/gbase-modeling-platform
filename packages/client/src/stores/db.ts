@@ -1,11 +1,19 @@
 import { API } from "@/api";
-import type { Table, Schema, SchemaQueryParams, TableCreateParams } from "@root/models";
+import type { Table, Schema, SchemaQueryParams, TableCreateParams, DataBaseStatus } from "@root/models";
 import { isSuccessResponse } from "@root/shared";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
 export const useDBStore = defineStore('db-store', () => {
-    const isLinking = ref(false)
+    const isReady = ref(false)
+    const status = ref<DataBaseStatus | null>(null)
+    async function getStatus() {
+        const result = await API.status.getStatus()
+        if (isSuccessResponse(result)) {
+            status.value = result.data
+        }
+        return result
+    }
 
     //#region 数据表相关
 
@@ -45,10 +53,10 @@ export const useDBStore = defineStore('db-store', () => {
      * @returns 数据库是否初始化成功
      */
     async function init() {
-        const results = await Promise.all([getTables(), getSchemas({ system: false })])
+        const results = await Promise.all([getTables(), getSchemas({ system: false }), getStatus()])
         const isAllReady = results.every((result) => isSuccessResponse(result))
         if (isAllReady) {
-            isLinking.value = true
+            isReady.value = true
             return true
         } else {
             return false
@@ -56,12 +64,14 @@ export const useDBStore = defineStore('db-store', () => {
     }
 
     return {
-        isLinking,
+        isReady,
         tables,
         getTables,
         schemas,
         getSchemas,
         createTable,
+        getStatus,
         init,
+        status
     }
 })

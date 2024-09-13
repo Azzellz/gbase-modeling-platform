@@ -8,6 +8,7 @@
         "@root/models": "workspace:^",
         "@root/shared": "workspace:^",
         "axios": "^1.7.7",
+        "dayjs": "^1.11.13",
         "lodash": "^4.17.21",
         "radash": "^12.1.0"
     },

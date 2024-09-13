@@ -24,15 +24,15 @@
         </n-divider>
         <div class="flex gap-4">
             <n-switch
-                v-model:value="dbStore.isLinking"
-                :loading="isTryLinking"
+                v-model:value="dbStore.isReady"
+                :loading="!dbStore.isReady"
                 :round="false"
                 disabled
                 size="large"
             >
                 <template #checked> 已连接 </template>
                 <template #unchecked>
-                    {{ isTryLinking ? '正在尝试连接数据库...' : '未连接' }}
+                    {{ !dbStore.isReady ? '正在尝试连接数据库...' : '未连接' }}
                 </template>
             </n-switch>
         </div>
@@ -42,15 +42,13 @@
 <script setup lang="ts">
 import { useDBStore } from '@/stores/db'
 import { NDivider, useMessage, NSwitch } from 'naive-ui'
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount } from 'vue'
 
 const dbStore = useDBStore()
 const message = useMessage()
-const isTryLinking = ref(true)
 
 onBeforeMount(async () => {
     const result = await dbStore.init()
-    isTryLinking.value = false
     if (!result) {
         message.error('连接数据库失败!')
     }
