@@ -7,7 +7,12 @@
                 </template>
                 <template #default>
                     <div class="flex max-lg:flex-col gap-10">
-                        <TableForm v-model:table="table" @create-table="handleCreateTable" />
+                        <TableForm
+                            v-model:model="table"
+                            :schemas="dbStore.schemas"
+                            :tables="dbStore.tables"
+                            @create-table="handleCreateTable"
+                        />
                         <!-- 预览 -->
                         <TableCard class="md:w-1/2" :table="table" />
                     </div>
@@ -39,7 +44,6 @@ const table = ref<TableCreateParams>({
     schema: 'public',
     columns: []
 })
-
 async function handleCreateTable(params: TableCreateParams) {
     const result = await dbStore.createTable(params)
     if (isSuccessResponse(result) && result.data.result) {

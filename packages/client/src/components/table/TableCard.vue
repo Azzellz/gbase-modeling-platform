@@ -8,7 +8,7 @@
             </div>
         </template>
         <n-divider style="margin-top: 0px">
-            <span>{{ table.columns.length }} 个列</span>
+            <span>共 {{ table.columns.length }} 列</span>
         </n-divider>
         <n-table striped :single-line="false">
             <thead>

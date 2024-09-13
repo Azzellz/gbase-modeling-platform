@@ -1,13 +1,17 @@
 <template>
     <!-- 表单 -->
-    <n-form ref="formRef" class="md:w-1/2" :model="table" :rules="formRules">
+    <n-form ref="formRef" class="md:w-1/2" :model="model" :rules="formRules">
         <!-- 表相关 -->
         <n-grid :cols="12" :x-gap="24">
             <n-form-item-gi :span="3" label="数据表的名称" path="name">
-                <n-input v-model:value="table.name" placeholder="请输入数据表名称" />
+                <n-input v-model:value="model.name" placeholder="请输入数据表名称" />
             </n-form-item-gi>
             <n-form-item-gi :span="3" label="数据表的模式" path="schema">
-                <n-input v-model:value="table.schema" placeholder="请输入数据表模式" />
+                <n-select
+                    v-model:value="model.schema"
+                    :options="schemaOptions"
+                    placeholder="请选择数据表模式"
+                />
             </n-form-item-gi>
             <n-gi class="flex items-center gap-4" :span="6">
                 <n-button :disabled="!isAllowCreateTable" type="success" @click="handleCreateTable">
@@ -17,7 +21,7 @@
             </n-gi>
         </n-grid>
 
-        <n-divider>
+        <n-divider style="margin-top: 0px">
             <span class="font-bold text-gray">创建列</span>
         </n-divider>
         <!-- 列相关 -->
@@ -41,8 +45,15 @@
                 <n-input v-model:value="currentColumn.default" placeholder="请输入列默认值" />
             </n-form-item-gi>
 
+            <!-- 外键引用 -->
             <n-form-item-gi :span="4" label="外键引用">
-                <n-input v-model:value="currentColumn.references" placeholder="请输入外键引用" />
+                <n-cascader
+                    v-model:value="currentColumn.references"
+                    placeholder="请选择外键引用"
+                    :options="referencesOptions"
+                    check-strategy="child"
+                    expand-trigger="hover"
+                />
             </n-form-item-gi>
 
             <!-- 选项组 -->
@@ -95,12 +106,12 @@
 </template>
 
 <script setup lang="ts">
-import type { TableColumnCreateParams, TableCreateParams } from '@root/models'
+import type { Schema, Table, TableColumnCreateParams, TableCreateParams } from '@root/models'
 import {
     type FormInst,
     type FormRules,
-    type FormItemRule,
     NForm,
+    NCascader,
     NInput,
     NSelect,
     NDivider,
@@ -116,26 +127,66 @@ import {
 import { computed, ref } from 'vue'
 import { cloneDeep } from 'lodash'
 
-const table = defineModel<TableCreateParams>('table', { required: true })
+//#region 组件上下文相关
+
+const model = defineModel<TableCreateParams>('model', { required: true })
 const emits = defineEmits<{
     'create-table': [params: TableCreateParams]
+}>()
+const props = defineProps<{
+    schemas: Schema[]
+    tables: Table[]
 }>()
 
 const message = useMessage()
 const dialog = useDialog()
 
+//#endregion
+
+//#region 根据props计算的选项相关
+
+const schemaOptions = computed(() => {
+    return props.schemas.map(({ name }) => ({
+        label: name,
+        value: name
+    }))
+})
+const referencesOptions = computed(() => {
+    return props.schemas.map((schema) => {
+        return {
+            label: schema.name,
+            value: schema.name,
+            children: props.tables
+                .filter((table) => table.schema === schema.name)
+                .filter((table) => table.columns.some((column) => column.isUnique))
+                .map((table) => ({
+                    label: table.name,
+                    value: table.name,
+                    children: table.columns
+                        .filter((column) => column.isUnique)
+                        .map((column) => ({
+                            label: column.name,
+                            value: `${schema.name}.${table.name}.${column.name}`
+                        }))
+                }))
+        }
+    })
+})
+
+//#endregion
+
 //#region 创建数据表相关
 
 const isAllowCreateTable = computed(() => {
-    return !!table.value.name && table.value.columns.length > 0
+    return !!model.value.name && model.value.columns.length > 0
 })
 
 async function handleCreateTable() {
-    emits('create-table', table.value)
+    emits('create-table', model.value)
 }
 
 function handleResetTable() {
-    table.value = cloneDeep(_emptyTable)
+    model.value = cloneDeep(_emptyTable)
     // 当前列的信息也要重置
     handleResetColumn()
 }
@@ -154,7 +205,7 @@ const _emptyColumn: TableColumnCreateParams = {
     isIncrements: false,
     default: null,
     comment: '',
-    references: ''
+    references: null as any
 }
 // 当前列
 const currentColumn = ref(cloneDeep(_emptyColumn))
@@ -216,7 +267,7 @@ function handleCreateColumn() {
         if (errors) {
             return message.error('请完成必填项')
         }
-        table.value.columns.push({
+        model.value.columns.push({
             ...(currentColumn.value as any)
         })
         message.success('创建列成功')
@@ -251,7 +302,9 @@ const formRef = ref<FormInst | null>(null)
 
 //#region 表单校验相关
 
+// PostgreSQL合法命名正则表达式
 const nameRegex = /^[a-zA-Z_][a-zA-Z0-9_]*$/
+// PostgreSQL保留关键字
 const reservedWords = [
     'ALL',
     'ANALYSE',
@@ -346,34 +399,45 @@ const reservedWords = [
     'WINDOW',
     'WITH'
 ]
-function createTableRule(label: string): FormItemRule {
-    return {
+const formRules: FormRules = {
+    name: {
         required: true,
         trigger: ['blur', 'input'],
         validator(_, value) {
             // 不得空
             if (!value) {
-                return new Error(`请输入${label}`)
+                return new Error('请输入数据表名称')
             }
             // 字符合法性
             if (!nameRegex.test(value)) {
-                return new Error(`${label}`)
+                return new Error('数据表名称')
             }
             // 长度在 1 到 63 个字符
             if (value.length < 1 || value.length > 63) {
-                return new Error(`${label}长度在 1 到 63 个字符之间`)
+                return new Error('数据表名称长度在 1 到 63 个字符之间')
             }
             // 是否是保留字
             if (reservedWords.includes(value.toUpperCase())) {
-                return new Error(`不能是保留字！`)
+                return new Error('不能是保留字！')
             }
-            return true
+            // 是否有同名表
+            if (props.tables.some((table) => table.name === value)) {
+                return new Error('已存在同名表！')
+            }
         }
-    }
-}
-const formRules: FormRules = {
-    name: createTableRule('数据表名称'),
-    schema: createTableRule('数据表模式'),
+    },
+    schema: {
+        required: true,
+        trigger: ['blur', 'input'],
+        validator(_, value) {
+            // 不得空
+            if (!value) {
+                return new Error('请选择数据表模式')
+            } else {
+                return true
+            }
+        }
+    },
     column: {
         name: {
             required: true,
@@ -397,7 +461,7 @@ const formRules: FormRules = {
                     return new Error(`不能是保留字！`)
                 }
                 // 是否有重复
-                if (table.value.columns.some((column) => column.name === name)) {
+                if (model.value.columns.some((column) => column.name === name)) {
                     return new Error(`列名已存在`)
                 }
                 return true
