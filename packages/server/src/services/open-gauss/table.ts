@@ -50,8 +50,12 @@ TableService.get(
 TableService.post(
     '/tables',
     async ({ body }) => {
-        const result = await DB.table.createTable(body)
-        return createSuccessResponse(200, '创建成功', result);
+        try {
+            const result = await DB.table.createTable(body)
+            return createSuccessResponse(200, '创建成功', result);
+        } catch (error) {
+            return createErrorResponse(200, error)
+        }
     },
     {
         body: 'create-table',

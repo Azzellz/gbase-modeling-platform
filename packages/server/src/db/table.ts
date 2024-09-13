@@ -162,10 +162,6 @@ ORDER BY
 async function createTable(params: TableCreateParams) {
     // 创建表并且生成sql
     const statements = SchemaBuilder.withSchema(params.schema || 'public').createTable(params.name, (table) => {
-        // 设置字符集
-        if (params.charset) {
-            table.charset(params.charset);
-        }
         // 添加列
         params.columns.forEach((column) => {
             let links: Knex.ColumnBuilder;
@@ -204,6 +200,7 @@ async function createTable(params: TableCreateParams) {
     }).toSQL();
 
     const sqls = statements.map(statement => statement.sql + ';')
+
     // 执行sql
     await Promise.all(sqls.map(sql => engine.execute(sql)))
 
@@ -214,6 +211,8 @@ async function createTable(params: TableCreateParams) {
         sql: sqls.join(' '),
         result: newTable.length ? newTable[0] : null,
     }
+
+
 }
 
 /**
