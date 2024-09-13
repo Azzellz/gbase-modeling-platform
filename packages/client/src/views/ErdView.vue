@@ -1,5 +1,6 @@
 <template>
-    <main class="h-full p-10 flex flex-col justify-center">
+    <main class="p-10 flex flex-col justify-center">
+        <h1>ER关系图</h1>
         <!-- 选择schema -->
         <n-tabs v-model:value="currentSchema" type="line">
             <template #prefix>
