@@ -1,5 +1,5 @@
 <template>
-    <main class="h-full flex flex-col p-10">
+    <main class="flex flex-col p-10">
         <h1>创建数据表</h1>
         <n-divider></n-divider>
         <div class="flex max-lg:flex-col gap-10">
