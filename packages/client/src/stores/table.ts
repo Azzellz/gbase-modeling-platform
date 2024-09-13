@@ -15,9 +15,10 @@ export const useTableStore = defineStore('table-store', () => {
     }
     async function createTable(params: TableCreateParams) {
         const result = await API.table.createTable(params)
-        // if (isSuccessResponse(result)) {
-        //     tables.value = 
-        // }
+        if (isSuccessResponse(result) && result.data.result) {
+            tables.value.push(result.data.result)
+        }
+        return result
     }
 
     return {

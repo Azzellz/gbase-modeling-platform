@@ -134,8 +134,11 @@ import {
 } from 'naive-ui'
 import { ref } from 'vue'
 import { cloneDeep } from 'lodash'
+import { useDBStore } from '@/stores/db'
+import { isSuccessResponse } from '@root/shared'
 
 const message = useMessage()
+const dbStore = useDBStore()
 const dialog = useDialog()
 
 //#region 创建数据表相关
@@ -152,7 +155,15 @@ const tableCharsetOptions = [
     }
 ]
 
-async function handleCreateTable() {}
+async function handleCreateTable() {
+    const result = await dbStore.createTable(formModel.value)
+    if (isSuccessResponse(result) && result.data.result) {
+        message.success('创建成功')
+    } else {
+        console.error(result)
+        message.error('创建失败')
+    }
+}
 
 function handleResetTable() {
     formModel.value = cloneDeep(_emptyTable)

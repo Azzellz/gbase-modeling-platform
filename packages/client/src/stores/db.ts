@@ -1,5 +1,5 @@
 import { API } from "@/api";
-import type { Table, Schema, SchemaQueryParams } from "@root/models";
+import type { Table, Schema, SchemaQueryParams, TableCreateParams } from "@root/models";
 import { isSuccessResponse } from "@root/shared";
 import { defineStore } from "pinia";
 import { ref } from "vue";
@@ -14,6 +14,13 @@ export const useDBStore = defineStore('db-store', () => {
         const result = await API.table.getTables()
         if (isSuccessResponse(result)) {
             tables.value = result.data
+        }
+        return result
+    }
+    async function createTable(params: TableCreateParams) {
+        const result = await API.table.createTable(params)
+        if (isSuccessResponse(result) && result.data.result) {
+            tables.value.push(result.data.result)
         }
         return result
     }
@@ -54,6 +61,7 @@ export const useDBStore = defineStore('db-store', () => {
         getTables,
         schemas,
         getSchemas,
+        createTable,
         init,
     }
 })
