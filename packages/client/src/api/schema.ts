@@ -1,14 +1,21 @@
 import { handleAxiosRequest } from "@root/shared";
 import { API_INST } from ".";
-import type { Schema, SchemaQueryParams } from "@root/models";
+import type { DataBaseSqlExecuteResult, Schema, SchemaCreateParams, SchemaQueryParams } from "@root/models";
 
 /**
  * 获取schema
- * @param system 是否包含系统内置的模式
+ * @param params 查询参数
  */
 export async function getSchemas(params: SchemaQueryParams) {
-    const result = await handleAxiosRequest<Schema[]>(() => API_INST.get('/schemas', {
+    return await handleAxiosRequest<Schema[]>(() => API_INST.get('/schemas', {
         params
     }))
-    return result
+}
+
+/**
+ * 创建schema
+ * @param params 创建参数
+ */
+export async function createSchema(params: SchemaCreateParams) {
+    return await handleAxiosRequest<Schema>(() => API_INST.post('/schemas', params))
 }

@@ -126,6 +126,7 @@ import {
 } from 'naive-ui'
 import { computed, ref } from 'vue'
 import { cloneDeep } from 'lodash'
+import { isPostgreSqlReservedWord, isPostgreSqlValidName } from '@root/shared'
 
 //#region 组件上下文相关
 
@@ -303,102 +304,6 @@ const formRef = ref<FormInst | null>(null)
 //#region 表单校验相关
 
 // PostgreSQL合法命名正则表达式
-const nameRegex = /^[a-zA-Z_][a-zA-Z0-9_]*$/
-// PostgreSQL保留关键字
-const reservedWords = [
-    'ALL',
-    'ANALYSE',
-    'ANALYZE',
-    'AND',
-    'ANY',
-    'ARRAY',
-    'AS',
-    'ASC',
-    'ASYMMETRIC',
-    'AUTHORIZATION',
-    'BINARY',
-    'BOTH',
-    'CASE',
-    'CAST',
-    'CHECK',
-    'COLLATE',
-    'COLUMN',
-    'CONSTRAINT',
-    'CREATE',
-    'CROSS',
-    'CURRENT_DATE',
-    'CURRENT_ROLE',
-    'CURRENT_TIME',
-    'CURRENT_TIMESTAMP',
-    'CURRENT_USER',
-    'DEFAULT',
-    'DEFERRABLE',
-    'DISTINCT',
-    'DO',
-    'ELSE',
-    'END',
-    'EXCEPT',
-    'FALSE',
-    'FETCH',
-    'FOREIGN',
-    'FREEZE',
-    'FROM',
-    'FULL',
-    'GRANT',
-    'GROUP',
-    'HAVING',
-    'ILIKE',
-    'IN',
-    'INITIALLY',
-    'INNER',
-    'INTERSECT',
-    'INTO',
-    'IS',
-    'ISNULL',
-    'JOIN',
-    'LATERAL',
-    'LEADING',
-    'LEFT',
-    'LIKE',
-    'LIMIT',
-    'LOCALTIME',
-    'LOCALTIMESTAMP',
-    'NATURAL',
-    'NOT',
-    'NOTNULL',
-    'NULL',
-    'OFFSET',
-    'ON',
-    'ONLY',
-    'OR',
-    'ORDER',
-    'OUTER',
-    'OVERLAPS',
-    'PLACING',
-    'PRIMARY',
-    'REFERENCES',
-    'RETURNING',
-    'RIGHT',
-    'SELECT',
-    'SESSION_USER',
-    'SIMILAR',
-    'SOME',
-    'SYMMETRIC',
-    'TABLE',
-    'THEN',
-    'TO',
-    'TRAILING',
-    'TRUE',
-    'UNION',
-    'UNIQUE',
-    'USER',
-    'USING',
-    'VERBOSE',
-    'WHEN',
-    'WHERE',
-    'WINDOW',
-    'WITH'
-]
 const formRules: FormRules = {
     name: {
         required: true,
@@ -409,15 +314,15 @@ const formRules: FormRules = {
                 return new Error('请输入数据表名称')
             }
             // 字符合法性
-            if (!nameRegex.test(value)) {
-                return new Error('数据表名称')
+            if (!isPostgreSqlValidName(value)) {
+                return new Error('数据表名称只能包含英文字母')
             }
             // 长度在 1 到 63 个字符
             if (value.length < 1 || value.length > 63) {
                 return new Error('数据表名称长度在 1 到 63 个字符之间')
             }
             // 是否是保留字
-            if (reservedWords.includes(value.toUpperCase())) {
+            if (isPostgreSqlReservedWord(value)) {
                 return new Error('不能是保留字！')
             }
             // 是否有同名表
@@ -449,7 +354,7 @@ const formRules: FormRules = {
                     return new Error(`请输入列名`)
                 }
                 // 只能是英文
-                if (!nameRegex.test(name)) {
+                if (!isPostgreSqlValidName(name)) {
                     return new Error(`列名只能包含英文字母`)
                 }
                 // 长度在 1 到 63 个字符
@@ -457,7 +362,7 @@ const formRules: FormRules = {
                     return new Error(`列名长度在 1 到 63 个字符之间`)
                 }
                 // 是否是保留字
-                if (reservedWords.includes(name.toUpperCase())) {
+                if (isPostgreSqlReservedWord(name)) {
                     return new Error(`不能是保留字！`)
                 }
                 // 是否有重复
