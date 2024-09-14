@@ -78,7 +78,7 @@ export async function handleAxiosRequest<T, U = string>(
 
     //#region 重试机制
     let attempt = 0
-    const maxAttempts = typeof _options.retry === 'number' ? _options.retry : 1
+    const maxAttempts = typeof _options.retry === 'number' ? _options.retry : 0
 
     while (attempt <= maxAttempts) {
         try {
