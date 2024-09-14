@@ -29,4 +29,4 @@ coverage
 
 *.tsbuildinfo
 config/client.config.ts
-config/db.config.ts
+config/server.config.ts

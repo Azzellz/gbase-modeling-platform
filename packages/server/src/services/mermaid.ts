@@ -3,6 +3,7 @@ import { createSuccessResponse } from '@root/shared'
 import { DB } from '@/db'
 import type { ColumnInfo } from '@root/models'
 import { SchemaModels } from '@/models/schema.model'
+import { Plugins } from '@/plugins'
 
 //#region erd工具函数相关
 
@@ -90,7 +91,7 @@ function generateMermaidERDiagramWithAllColumns(columns: ColumnInfo[]): string {
 
 //#endregion
 
-export const MermaidService = new Elysia().use(SchemaModels)
+export const MermaidService = new Elysia().use(Plugins.Auth).use(SchemaModels)
 MermaidService.get(
     '/mermaid/erd',
     async ({ query: { schema } }) => {

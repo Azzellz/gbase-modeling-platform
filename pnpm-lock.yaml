@@ -108,7 +108,13 @@ importers:
 
   packages/server:
     dependencies:
+      '@elysiajs/bearer':
+        specifier: ^1.1.2
+        version: 1.1.2(elysia@1.1.12(@sinclair/typebox@0.33.9)(typescript@5.4.5))
       '@elysiajs/cors':
+        specifier: ^1.1.1
+        version: 1.1.1(elysia@1.1.12(@sinclair/typebox@0.33.9)(typescript@5.4.5))
+      '@elysiajs/jwt':
         specifier: ^1.1.1
         version: 1.1.1(elysia@1.1.12(@sinclair/typebox@0.33.9)(typescript@5.4.5))
       better-sqlite3:
@@ -419,8 +425,18 @@ packages:
     peerDependencies:
       vue: ^3.0.11
 
+  '@elysiajs/bearer@1.1.2':
+    resolution: {integrity: sha512-xlClHLMxuNm4IF0dRsVtTyJm7X9MhTBn6SxrsqLWwT+9pO57+RDW2HblnLvnYupMnVW424iQ8ky1CgGwIqP6Nw==}
+    peerDependencies:
+      elysia: '>= 1.1.0'
+
   '@elysiajs/cors@1.1.1':
     resolution: {integrity: sha512-Bl6JSURwbneaJqkq02bd0C/F8StkmU5zoPLpnSncy4DZSU8TDwWPXxmoHqozI3hf1piDaSQ+I21cmpjPlQ8uYQ==}
+    peerDependencies:
+      elysia: '>= 1.1.0'
+
+  '@elysiajs/jwt@1.1.1':
+    resolution: {integrity: sha512-DpTFeTstzltmQdorIU7b1VlaAZLOhV18rF4aC0mkxbJTPmRLUwjf549osnGKuXHoJLRgeSZYb9POKD6hm7NwHw==}
     peerDependencies:
       elysia: '>= 1.1.0'
 
@@ -2236,6 +2252,9 @@ packages:
     resolution: {integrity: sha512-pmfRbVRs/7khFrSAYnSiJ8C0D5GvzkE4Ey2pAvUcJsw1ly/p+7ut27jbJrjY79BpAJQJ4gXYFtK6d1Aub+9baQ==}
     hasBin: true
 
+  jose@4.15.9:
+    resolution: {integrity: sha512-1vUQX+IdDMVPj4k8kOxgUqlcK518yluMuGZwqlr44FS1ppZB/5GWh4rZG89erpOBOJjU/OBsnCVFfapsRz6nEA==}
+
   js-md4@0.3.2:
     resolution: {integrity: sha512-/GDnfQYsltsjRswQhN9fhv3EMw2sCpUdrdxyWDOUK7eyD++r3gRhzgiQgc/x4MAv2i1iuQ4lxO5mvqM3vj4bwA==}
 
@@ -3790,9 +3809,18 @@ snapshots:
     dependencies:
       vue: 3.5.0(typescript@5.4.5)
 
+  '@elysiajs/bearer@1.1.2(elysia@1.1.12(@sinclair/typebox@0.33.9)(typescript@5.4.5))':
+    dependencies:
+      elysia: 1.1.12(@sinclair/typebox@0.33.9)(typescript@5.4.5)
+
   '@elysiajs/cors@1.1.1(elysia@1.1.12(@sinclair/typebox@0.33.9)(typescript@5.4.5))':
     dependencies:
       elysia: 1.1.12(@sinclair/typebox@0.33.9)(typescript@5.4.5)
+
+  '@elysiajs/jwt@1.1.1(elysia@1.1.12(@sinclair/typebox@0.33.9)(typescript@5.4.5))':
+    dependencies:
+      elysia: 1.1.12(@sinclair/typebox@0.33.9)(typescript@5.4.5)
+      jose: 4.15.9
 
   '@emotion/hash@0.8.0': {}
 
@@ -5663,6 +5691,8 @@ snapshots:
   jiti@1.21.6: {}
 
   jiti@2.0.0-beta.3: {}
+
+  jose@4.15.9: {}
 
   js-md4@0.3.2: {}
 
