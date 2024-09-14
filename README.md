@@ -59,3 +59,61 @@ export default {
     }
 }
 ```
+
+## 项目启动
+
+分为前端启动和后端启动两个部分。
+
+### 前端启动
+
+进入/packages/client，使用任意包管理工具执行以下脚本，这里以pnpm为例:
+
+```bash
+pnpm dev
+```
+
+执行完成后，在浏览器中打开 http://localhost:3000，即可访问前端页面。
+
+### 后端启动
+
+进入/packages/server，使用任意包管理工具执行以下脚本，这里以pnpm为例:
+
+```bash
+pnpm dev
+```
+
+执行完成后，会在控制台输出后端启动成功的信息，即可访问后端接口。
+
+## 项目构建
+
+分为前端构建和后端构建两个部分。
+
+### 前端构建
+
+进入/packages/client，使用任意包管理工具执行以下脚本，这里以pnpm为例:
+
+```bash
+pnpm build
+```
+
+执行完成后，会在 /packages/client/dist 下生成构建好的前端文件。
+
+### 后端构建(编译为二进制可执行文件)
+
+进入/packages/server，使用任意包管理工具执行以下脚本，这里以pnpm为例:
+
+```bash
+pnpm compile
+```
+
+执行完成后，会在 /packages/server/dist 下生成名为 **server** 的二进制可执行文件。
+
+### 后端构建(Bundle)
+
+进入/packages/server，使用任意包管理工具执行以下脚本，这里以pnpm为例:
+
+```bash
+pnpm compile
+```
+
+执行完成后，会在 /packages/server/dist 下生成名为 **server.js** 的打包好的js文件。
