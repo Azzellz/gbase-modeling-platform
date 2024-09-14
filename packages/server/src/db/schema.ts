@@ -1,12 +1,21 @@
 import { Schema } from "@root/models"
 import { engine } from "./engine"
 
+/**
+ * 删除Schema
+ * @param name 目标schema名称
+ * @param cascade 是否级联删除
+ */
 async function deleteSchema(name: string, cascade: boolean = false) {
     const sql = `DROP SCHEMA ${name} ${cascade ? 'CASCADE' : ''};`
     return await engine.execute(sql)
 }
 
-async function getSchemas(system: boolean) {
+/**
+ * 获取schema
+ * @param includeSystem 是否包含系统内置的schema
+ */
+async function getSchemas(includeSystem: boolean) {
     const excludes = `
         WHERE schema_name NOT IN
         ('pg_catalog', 'information_schema', 'pg_toast', 'cstore', 'pkg_service',
@@ -24,7 +33,7 @@ async function getSchemas(system: boolean) {
     const sql = `
         SELECT schema_name
         FROM information_schema.schemata
-        ${system ? "" : excludes};
+        ${includeSystem ? "" : excludes};
     `
     const result = await engine.execute<{ schema_name: string }>(sql)
 
@@ -36,7 +45,18 @@ async function getSchemas(system: boolean) {
     })
 }
 
+/**
+ * 创建schema
+ * @param name schema名
+ * @param owner schema所属用户
+ */
+async function createSchema(name: string, owner?: string) {
+    const sql = `CREATE SCHEMA ${name} ${owner ? `AUTHORIZATION ${owner}` : ''};`
+    return await engine.execute(sql)
+}
+
 export const schema = {
     deleteSchema,
-    getSchemas
+    getSchemas,
+    createSchema
 }
