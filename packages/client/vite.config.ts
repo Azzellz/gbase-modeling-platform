@@ -8,6 +8,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 // https://vitejs.dev/config/
 export default defineConfig({
     server: {
+        port: 5000,
         host: true,
     },
     plugins: [vue(), vueJsx(), vueDevTools(), UnoCSS()],
