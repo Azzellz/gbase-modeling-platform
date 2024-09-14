@@ -13,7 +13,8 @@ function _defaultOnSuccess<T>(response: AxiosResponse<any>): SuccessResponse<T> 
 function _defaultOnError<U>(result: any): ErrorResponse<U> {
     if (isAxiosError(result)) {
         if (result.response) {
-            return createErrorResponse(result.response.status, result.response.statusText as U)
+            const data = result.response.data
+            return createErrorResponse(data.code || result.response.status, data.error || result.response.statusText as U)
         } else if (result.request) {
             return createErrorResponse(result.status || 500, ('网络错误: ' + result.message) as U)
         } else {
@@ -27,7 +28,7 @@ function _defaultOnError<U>(result: any): ErrorResponse<U> {
     }
 }
 
-const _defaultOnFinal = () => {}
+const _defaultOnFinal = () => { }
 
 const _defaultOptions = {
     onError: _defaultOnError,
