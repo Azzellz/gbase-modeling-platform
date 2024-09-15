@@ -3,8 +3,8 @@
     "version": "1.0.50",
     "type": "module",
     "scripts": {
-        "compile": "bun build --compile src/index.ts --outfile=/dist/server",
-        "bundle": "bun build --target node src/index.ts --outfile=/dist/server.js",
+        "compile": "bun build --compile src/index.ts --outfile=./dist/server",
+        "bundle": "bun build --target node src/index.ts --outfile=./dist/server.js",
         "dev": "bun run --watch src/index.ts"
     },
     "dependencies": {
